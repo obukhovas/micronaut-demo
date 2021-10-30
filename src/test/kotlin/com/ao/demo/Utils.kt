@@ -11,7 +11,7 @@ fun buildLongString(times: Int, string: String = "1"): String {
 }
 
 fun String.minify(): String {
-    val gson = GsonBuilder().create()
+    val gson = GsonBuilder().disableHtmlEscaping().create()
     val jsonElement = JsonParser().parse(this)
     return gson.toJson(jsonElement)
 }

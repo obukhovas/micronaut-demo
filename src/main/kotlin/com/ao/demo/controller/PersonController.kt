@@ -1,6 +1,5 @@
 package com.ao.demo.controller
 
-import com.ao.demo.UserNotFoundException
 import com.ao.demo.dto.PersonDto
 import com.ao.demo.service.PersonConverter
 import com.ao.demo.service.PersonService
@@ -40,15 +39,8 @@ open class PersonController(
 
     @Get("/persons/{id}", processes = [MediaType.APPLICATION_JSON])
     fun getById(@PathVariable id: Long): HttpResponse<PersonDto> {
-        val person = try {
-            personService.findById(id)
-        } catch (e: UserNotFoundException) {
-            return HttpResponse.notFound()
-        }
-
-        return HttpResponse.ok(
-            personConverter.toDto(person)
-        )
+        val person = personService.findById(id)
+        return HttpResponse.ok(personConverter.toDto(person))
     }
 
     @Post("/persons", consumes = [MediaType.APPLICATION_JSON], processes = [MediaType.APPLICATION_JSON])
@@ -61,25 +53,15 @@ open class PersonController(
 
     @Put("/persons/{id}", consumes = [MediaType.APPLICATION_JSON], processes = [MediaType.APPLICATION_JSON])
     open fun update(@PathVariable id: Long, @Valid person: PersonDto): HttpResponse<PersonDto> {
-        val updated = try {
-            personService.update(
-                personConverter.fromDto(person.copy(id = id))
-            )
-        } catch (e: UserNotFoundException) {
-            return HttpResponse.notFound()
-        }
-
+        val updated = personService.update(
+            personConverter.fromDto(person.copy(id = id))
+        )
         return HttpResponse.ok(personConverter.toDto(updated))
     }
 
     @Delete("persons/{id}", processes = [MediaType.APPLICATION_JSON])
     open fun delete(@PathVariable id: Long): HttpResponse<PersonDto> {
-        val deleted = try {
-            personService.delete(id)
-        } catch (e: UserNotFoundException) {
-            return HttpResponse.notFound()
-        }
-
+        val deleted = personService.delete(id)
         return HttpResponse.ok(personConverter.toDto(deleted))
     }
 
