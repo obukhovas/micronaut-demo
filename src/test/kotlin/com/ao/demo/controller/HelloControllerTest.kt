@@ -1,24 +1,17 @@
 package com.ao.demo.controller
 
+import com.ao.demo.BaseControllerTest
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
-import io.micronaut.http.client.HttpClient
-import io.micronaut.http.client.annotation.Client
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest
-import jakarta.inject.Inject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-@MicronautTest
-class HelloControllerTest {
-    @Inject
-    @field:Client("/")
-    lateinit var client: HttpClient
+class HelloControllerTest : BaseControllerTest() {
 
     @Test
     fun testPing() {
         val request: HttpRequest<Any> = HttpRequest.GET("/ping")
-        val response = client.toBlocking().exchange(request, String::class.java)
+        val response = perform(request)
         with(response) {
             assertThat(status).isEqualTo(HttpStatus.OK)
             assertThat(body.isPresent).isTrue
@@ -29,7 +22,7 @@ class HelloControllerTest {
     @Test
     fun testHello() {
         val request: HttpRequest<Any> = HttpRequest.GET("/hello/World")
-        val response = client.toBlocking().exchange(request, String::class.java)
+        val response = perform(request)
         with(response) {
             assertThat(status).isEqualTo(HttpStatus.OK)
             assertThat(body.isPresent).isTrue
