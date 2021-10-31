@@ -1,3 +1,44 @@
 micronaut:
   application:
     name: micronautDemo
+  metrics:
+    enabled: true
+
+endpoints:
+  all:
+    port: 8085
+  beans:
+    enabled: true
+    sensitive: false
+  loggers:
+    enabled: true
+    sensitive: false
+  info:
+    enabled: true
+    sensitive: false
+  health:
+    enabled: true
+    sensitive: false
+    details-visible: ANONYMOUS
+  routes:
+    enabled: true
+    sensitive: false
+  metrics:
+    enabled: true
+    sensitive: false
+  prometheus:
+    enabled: true
+    sensitive: false
+    descriptions: true
+  env:
+    enabled: true
+    sensitive: false
+  threaddump:
+    enabled: true
+    sensitive: false
+  refresh:
+    enabled: true
+    sensitive: true
+  stop:
+    enabled: true
+    sensitive: true

@@ -7,6 +7,8 @@ import io.micronaut.context.event.BeanCreatedEventListener
 import io.micronaut.http.netty.channel.ChannelPipelineCustomizer
 import io.netty.channel.ChannelPipeline
 import jakarta.inject.Singleton
+import org.zalando.logbook.Conditions.exclude
+import org.zalando.logbook.Conditions.requestTo
 import org.zalando.logbook.DefaultHttpLogWriter
 import org.zalando.logbook.DefaultSink
 import org.zalando.logbook.Logbook
@@ -18,6 +20,18 @@ class LogbookConfig {
     @Singleton
     fun logbook(): Logbook {
         return Logbook.builder()
+            .condition(
+                exclude(
+                    requestTo("/beans"),
+                    requestTo("/loggers"),
+                    requestTo("/info"),
+                    requestTo("/health"),
+                    requestTo("/routes"),
+                    requestTo("/metrics/**"),
+                    requestTo("/prometheus"),
+                    requestTo("/env/**")
+                )
+            )
             .sink(DefaultSink(JsonHttpLogFormatter(), DefaultHttpLogWriter()))
             .build()
     }
