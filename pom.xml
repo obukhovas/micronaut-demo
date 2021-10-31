@@ -18,10 +18,11 @@
         <jdk.version>1.8</jdk.version>
         <!-- If you are building with JDK 9 or higher, you can uncomment the lines below to set the release version -->
         <!-- <release.version>8</release.version> -->
-        <micronaut.version>3.1.1</micronaut.version>
         <exec.mainClass>com.ao.demo.ApplicationKt</exec.mainClass>
-        <kotlinVersion>1.5.21</kotlinVersion>
         <micronaut.runtime>netty</micronaut.runtime>
+        <micronaut.version>3.1.1</micronaut.version>
+        <kotlinVersion>1.5.21</kotlinVersion>
+        <logbook.version>2.14.0</logbook.version>
     </properties>
 
     <repositories>
@@ -55,6 +56,22 @@
         <dependency>
             <groupId>io.micronaut.kotlin</groupId>
             <artifactId>micronaut-kotlin-runtime</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.zalando</groupId>
+            <artifactId>logbook-core</artifactId>
+            <version>${logbook.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zalando</groupId>
+            <artifactId>logbook-netty</artifactId>
+            <version>${logbook.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zalando</groupId>
+            <artifactId>logbook-json</artifactId>
+            <version>${logbook.version}</version>
         </dependency>
 
         <dependency>
