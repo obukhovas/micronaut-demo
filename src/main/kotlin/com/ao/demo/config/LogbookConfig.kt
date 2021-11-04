@@ -29,7 +29,9 @@ class LogbookConfig {
                     requestTo("/routes"),
                     requestTo("/metrics/**"),
                     requestTo("/prometheus"),
-                    requestTo("/env/**")
+                    requestTo("/env/**"),
+                    requestTo("/swagger/**"),
+                    requestTo("/swagger-ui/**")
                 )
             )
             .sink(DefaultSink(JsonHttpLogFormatter(), DefaultHttpLogWriter()))

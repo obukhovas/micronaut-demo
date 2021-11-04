@@ -6,6 +6,25 @@ micronaut:
   security:
     basic-auth:
       enabled: true
+    intercept-url-map:
+      - pattern: /swagger/**
+        httpMethod: GET
+        access:
+          - isAnonymous()
+      - pattern: /swagger-ui/**
+        httpMethod: GET
+        access:
+          - isAnonymous()
+  router:
+    static-resources:
+      swagger:
+        enabled: true
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        enabled: true
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
 
 datasources:
   default:
