@@ -35,7 +35,7 @@ class ErrorHandlerTest : BaseControllerTest() {
 
         whenever(personServiceMock.getAll()).thenThrow(RuntimeException("Something went wrong"))
 
-        val request = HttpRequest.GET<Any>("/persons")
+        val request = HttpRequest.GET<Any>("/persons").basicAuth("reader", "reader")
         val response = perform(request)
 
         with(response) {
@@ -66,7 +66,7 @@ class ErrorHandlerTest : BaseControllerTest() {
         }
         """.minify()
 
-        val request = HttpRequest.POST("/persons", requestBody)
+        val request = HttpRequest.POST("/persons", requestBody).basicAuth("editor", "editor")
         val response = perform(request)
 
         with(response) {

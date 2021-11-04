@@ -3,6 +3,9 @@ micronaut:
     name: micronautDemo
   metrics:
     enabled: true
+  security:
+    basic-auth:
+      enabled: true
 
 endpoints:
   all:
@@ -42,3 +45,21 @@ endpoints:
   stop:
     enabled: true
     sensitive: true
+
+credentials:
+  users:
+    - username: root
+      password: root
+      roles:
+        - ROLE_READER
+        - ROLE_CREATOR
+    - username: reader
+      password: reader
+      roles:
+        - ROLE_READER
+    - username: editor
+      password: editor
+      roles:
+        - ROLE_EDITOR
+    - username: anonymous
+      password: anonymous

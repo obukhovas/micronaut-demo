@@ -10,7 +10,7 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 
-class PersonViolationsControllerTest : BaseControllerTest() {
+class PersonControllerViolationsTest : BaseControllerTest() {
 
     @TestFactory
     fun `person dto violations`(): List<DynamicTest> {
@@ -24,8 +24,8 @@ class PersonViolationsControllerTest : BaseControllerTest() {
         """.minify()
 
         return listOf(
-            HttpRequest.POST("/persons", requestBody),
-            HttpRequest.PUT("/persons/99", requestBody)
+            HttpRequest.POST("/persons", requestBody).basicAuth("editor", "editor"),
+            HttpRequest.PUT("/persons/99", requestBody).basicAuth("editor", "editor")
         ).map { httpRequest ->
             DynamicTest.dynamicTest("${httpRequest.method} ${httpRequest.uri.path} violations") {
                 @Language("JSON")

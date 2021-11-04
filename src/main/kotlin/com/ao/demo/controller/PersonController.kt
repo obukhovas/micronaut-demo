@@ -12,9 +12,12 @@ import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
 import io.micronaut.http.annotation.Put
 import io.micronaut.http.annotation.QueryValue
+import io.micronaut.security.annotation.Secured
+import io.micronaut.security.rules.SecurityRule
 import javax.validation.Valid
 
 @Controller
+@Secured(SecurityRule.IS_AUTHENTICATED)
 open class PersonController(
     private val personService: PersonService,
     private val personConverter: PersonConverter
@@ -23,6 +26,7 @@ open class PersonController(
     // Micronaut does not consider query parameters when matching a route,
     // so separating the routes by query parameters will never work
     @Get("/persons", processes = [MediaType.APPLICATION_JSON])
+    @Secured("ROLE_READER")
     fun findAllOrByName(@QueryValue name: String?): HttpResponse<List<PersonDto>> {
         val persons = if (name != null) personService.findByName(name) else personService.getAll()
 
@@ -38,12 +42,14 @@ open class PersonController(
     }
 
     @Get("/persons/{id}", processes = [MediaType.APPLICATION_JSON])
+    @Secured("ROLE_READER")
     fun getById(@PathVariable id: Long): HttpResponse<PersonDto> {
         val person = personService.findById(id)
         return HttpResponse.ok(personConverter.toDto(person))
     }
 
     @Post("/persons", consumes = [MediaType.APPLICATION_JSON], processes = [MediaType.APPLICATION_JSON])
+    @Secured("ROLE_EDITOR")
     open fun create(@Valid person: PersonDto): HttpResponse<PersonDto> {
         val created = personService.create(
             personConverter.fromDto(person)
@@ -52,6 +58,7 @@ open class PersonController(
     }
 
     @Put("/persons/{id}", consumes = [MediaType.APPLICATION_JSON], processes = [MediaType.APPLICATION_JSON])
+    @Secured("ROLE_EDITOR")
     open fun update(@PathVariable id: Long, @Valid person: PersonDto): HttpResponse<PersonDto> {
         val updated = personService.update(
             personConverter.fromDto(person.copy(id = id))
@@ -60,6 +67,7 @@ open class PersonController(
     }
 
     @Delete("persons/{id}", processes = [MediaType.APPLICATION_JSON])
+    @Secured("ROLE_EDITOR")
     open fun delete(@PathVariable id: Long): HttpResponse<PersonDto> {
         val deleted = personService.delete(id)
         return HttpResponse.ok(personConverter.toDto(deleted))

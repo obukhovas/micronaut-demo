@@ -30,7 +30,7 @@ class PersonControllerTest : BaseControllerTest() {
         whenever(personServiceMock.getAll())
             .thenReturn(listOf(Person(1L, "Great", "Person", 20)))
 
-        val request = HttpRequest.GET<Any>("/persons")
+        val request = HttpRequest.GET<Any>("/persons").basicAuth("reader", "reader")
         val response = perform(request)
 
         with(response) {
@@ -44,7 +44,7 @@ class PersonControllerTest : BaseControllerTest() {
     fun `find all should return status 204 if there is no persons`() {
         whenever(personServiceMock.getAll()).thenReturn(emptyList())
 
-        val request = HttpRequest.GET<Any>("/persons")
+        val request = HttpRequest.GET<Any>("/persons").basicAuth("reader", "reader")
         val response = perform(request)
 
         with(response) {
@@ -69,7 +69,7 @@ class PersonControllerTest : BaseControllerTest() {
         whenever(personServiceMock.findByName("person"))
             .thenReturn(listOf(Person(1L, "Great", "Person", 20)))
 
-        val request = HttpRequest.GET<Any>("/persons?name=person")
+        val request = HttpRequest.GET<Any>("/persons?name=person").basicAuth("reader", "reader")
         val response = perform(request)
 
         with(response) {
@@ -83,7 +83,7 @@ class PersonControllerTest : BaseControllerTest() {
     fun `find by name should return status 204 if person does not found`() {
         whenever(personServiceMock.findByName("person")).thenReturn(emptyList())
 
-        val request = HttpRequest.GET<Any>("/persons?name=person")
+        val request = HttpRequest.GET<Any>("/persons?name=person").basicAuth("reader", "reader")
         val response = perform(request)
 
         with(response) {
@@ -105,7 +105,7 @@ class PersonControllerTest : BaseControllerTest() {
         """.minify()
         whenever(personServiceMock.findById(99L)).thenReturn(Person(1L, "Great", "Person", 20))
 
-        val request = HttpRequest.GET<Any>("/persons/99")
+        val request = HttpRequest.GET<Any>("/persons/99").basicAuth("reader", "reader")
         val response = perform(request)
 
         with(response) {
@@ -119,7 +119,7 @@ class PersonControllerTest : BaseControllerTest() {
     fun `getById should return status 404 if person does not found`() {
         whenever(personServiceMock.findById(99L)).thenThrow(UserNotFoundException())
 
-        val request = HttpRequest.GET<Any>("/persons/99")
+        val request = HttpRequest.GET<Any>("/persons/99").basicAuth("reader", "reader")
         val response = perform(request)
 
         with(response) {
@@ -151,7 +151,7 @@ class PersonControllerTest : BaseControllerTest() {
         whenever(personServiceMock.create(Person(null, "Great", "Person", 20)))
             .thenReturn(Person(1L, "Great", "Person", 20))
 
-        val request = HttpRequest.POST("/persons", requestBody)
+        val request = HttpRequest.POST("/persons", requestBody).basicAuth("editor", "editor")
         val response = perform(request)
 
         with(response) {
@@ -185,7 +185,7 @@ class PersonControllerTest : BaseControllerTest() {
             .thenAnswer(AdditionalAnswers.returnsFirstArg<Person>())
 
 
-        val request = HttpRequest.PUT("/persons/99", requestBody)
+        val request = HttpRequest.PUT("/persons/99", requestBody).basicAuth("editor", "editor")
         val response = perform(request)
 
         with(response) {
@@ -208,7 +208,7 @@ class PersonControllerTest : BaseControllerTest() {
             }
         """.minify()
 
-        val request = HttpRequest.PUT("/persons/99", requestBody)
+        val request = HttpRequest.PUT("/persons/99", requestBody).basicAuth("editor", "editor")
         val response = perform(request)
 
         with(response) {
@@ -230,7 +230,7 @@ class PersonControllerTest : BaseControllerTest() {
         """.minify()
         whenever(personServiceMock.delete(99)).thenReturn(Person(99, "Greatest", "Man", 18))
 
-        val request = HttpRequest.DELETE<Any>("/persons/99")
+        val request = HttpRequest.DELETE<Any>("/persons/99").basicAuth("editor", "editor")
         val response = perform(request)
 
         with(response) {
@@ -244,7 +244,7 @@ class PersonControllerTest : BaseControllerTest() {
     fun `deletePerson should return status 404 if person does not found`() {
         whenever(personServiceMock.delete(99)).thenThrow(UserNotFoundException())
 
-        val request = HttpRequest.DELETE<Any>("/persons/99")
+        val request = HttpRequest.DELETE<Any>("/persons/99").basicAuth("editor", "editor")
         val response = perform(request)
 
         with(response) {
