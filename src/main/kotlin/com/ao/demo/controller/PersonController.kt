@@ -61,16 +61,17 @@ open class PersonController(
     @Secured("ROLE_EDITOR")
     open fun update(@PathVariable id: Long, @Valid person: PersonDto): HttpResponse<PersonDto> {
         val updated = personService.update(
-            personConverter.fromDto(person.copy(id = id))
+            id = id,
+            person = personConverter.fromDto(person)
         )
         return HttpResponse.ok(personConverter.toDto(updated))
     }
 
     @Delete("persons/{id}", processes = [MediaType.APPLICATION_JSON])
     @Secured("ROLE_EDITOR")
-    open fun delete(@PathVariable id: Long): HttpResponse<PersonDto> {
-        val deleted = personService.delete(id)
-        return HttpResponse.ok(personConverter.toDto(deleted))
+    open fun delete(@PathVariable id: Long): HttpResponse<Any> {
+        personService.delete(id)
+        return HttpResponse.ok()
     }
 
 }

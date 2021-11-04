@@ -2,8 +2,9 @@ package com.ao.demo.controller
 
 import com.ao.demo.BaseControllerTest
 import com.ao.demo.UserNotFoundException
-import com.ao.demo.minify
 import com.ao.demo.domain.Person
+import com.ao.demo.minify
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
@@ -138,6 +139,7 @@ class PersonControllerTest : BaseControllerTest() {
               "age": 20
             }
         """.minify()
+
         @Language("JSON")
 
         val expectedBody = """
@@ -181,8 +183,8 @@ class PersonControllerTest : BaseControllerTest() {
               "age": 18
             }
         """.minify()
-        whenever(personServiceMock.update(Person(99, "Greatest", "Man", 18)))
-            .thenAnswer(AdditionalAnswers.returnsFirstArg<Person>())
+        whenever(personServiceMock.update(99, Person(null, "Greatest", "Man", 18)))
+            .thenReturn(Person(99, "Greatest", "Man", 18))
 
 
         val request = HttpRequest.PUT("/persons/99", requestBody).basicAuth("editor", "editor")
@@ -197,7 +199,7 @@ class PersonControllerTest : BaseControllerTest() {
 
     @Test
     fun `updatePerson should return status 404 if person does not found`() {
-        whenever(personServiceMock.update(Person(99, "Greatest", "Man", 18))).thenThrow(UserNotFoundException())
+        whenever(personServiceMock.update(99, Person(null, "Greatest", "Man", 18))).thenThrow(UserNotFoundException())
 
         @Language("JSON")
         val requestBody = """
@@ -219,25 +221,14 @@ class PersonControllerTest : BaseControllerTest() {
 
     @Test
     fun `deletePerson should return status 200 and deleted person`() {
-        @Language("JSON")
-        val expectedBody = """
-            {
-              "id": 99,
-              "firstName": "Greatest",
-              "secondName": "Man",
-              "age": 18
-            }
-        """.minify()
-        whenever(personServiceMock.delete(99)).thenReturn(Person(99, "Greatest", "Man", 18))
-
         val request = HttpRequest.DELETE<Any>("/persons/99").basicAuth("editor", "editor")
         val response = perform(request)
 
         with(response) {
             assertThat(status).isEqualTo(HttpStatus.OK)
-            assertThat(body.isPresent).isTrue
-            assertThat(body.get()).isEqualTo(expectedBody)
+            assertThat(body.isPresent).isFalse
         }
+        verify(personServiceMock).delete(99)
     }
 
     @Test

@@ -2,48 +2,62 @@ package com.ao.demo.service
 
 import com.ao.demo.UserNotFoundException
 import com.ao.demo.domain.Person
+import com.ao.demo.repository.PersonRepository
 import jakarta.inject.Singleton
-import java.util.Collections
-import java.util.concurrent.atomic.AtomicLong
+import javax.transaction.Transactional
+import javax.validation.ConstraintViolationException
 
 @Singleton
-open class PersonService {
-
-    private companion object {
-        val counter = AtomicLong()
-        val persons: MutableList<Person> = Collections.synchronizedList(mutableListOf<Person>())
-    }
+open class PersonService(
+    private val personRepository: PersonRepository,
+    private val personConverter: PersonConverter
+) {
 
     open fun getAll(): List<Person> {
-        return persons.toList()
+        return personRepository.findAll().map {
+            personConverter.fromEntity(it)
+        }
     }
 
     open fun findById(id: Long): Person {
-        return persons.firstOrNull { id == it.id } ?: throw UserNotFoundException()
+        return personRepository.findById(id)
+            .orElseThrow { UserNotFoundException() }
+            .let { personConverter.fromEntity(it) }
     }
 
     open fun findByName(name: String): List<Person> {
-        return persons.filter { name.equals(it.firstName, ignoreCase = true) }
+        return personRepository.findByFirstName(name).map {
+            personConverter.fromEntity(it)
+        }
     }
 
+    @Transactional
     open fun create(person: Person): Person {
-        return person.also {
-            it.id = counter.incrementAndGet()
-            persons.add(it)
+        val created = personRepository.save(
+            personConverter.toEntity(person)
+        )
+        return personConverter.fromEntity(created)
+    }
+
+    @Transactional
+    open fun update(id: Long, person: Person): Person {
+        val entity = personRepository.findByIdForUpdate(id) ?: throw UserNotFoundException()
+        with(entity) {
+            firstName = person.firstName
+            secondName = person.secondName
+            age = person.age
+        }
+        return personRepository.update(entity).let {
+            personConverter.fromEntity(it)
         }
     }
 
-    open fun update(person: Person): Person {
-        return findById(person.id!!).also {
-            it.firstName = person.firstName
-            it.secondName = person.secondName
-            it.age = person.age
-        }
-    }
-
-    open fun delete(id: Long): Person {
-        return findById(id).also {
-            persons.remove(it)
+    @Transactional
+    open fun delete(id: Long) {
+        try {
+            personRepository.deleteById(id)
+        } catch (e: ConstraintViolationException) {
+            throw UserNotFoundException()
         }
     }
 

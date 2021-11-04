@@ -7,9 +7,37 @@ micronaut:
     basic-auth:
       enabled: true
 
+datasources:
+  default:
+    url: 'jdbc:h2:mem:devDb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE;'
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ''
+    dialect: H2
+jpa:
+  default:
+    entity-scan:
+      packages: 'com.ao.demo.entity'
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: none
+        show_sql: true
+        format_sql: true
+        generate_statistics: true
+liquibase:
+  enabled: true
+  datasources:
+    default:
+      enabled: true
+      change-log: 'classpath:db/liquibase-changelog.xml'
+
 endpoints:
   all:
     port: 8085
+  liquibase:
+    enabled: true
+    sensitive: false
   beans:
     enabled: true
     sensitive: false
@@ -52,7 +80,7 @@ credentials:
       password: root
       roles:
         - ROLE_READER
-        - ROLE_CREATOR
+        - ROLE_EDITOR
     - username: reader
       password: reader
       roles:
