@@ -1,13 +1,29 @@
-## Micronaut 3.1.1 Documentation
+## Micronaut Demo
 
-- [User Guide](https://docs.micronaut.io/3.1.1/guide/index.html)
-- [API Reference](https://docs.micronaut.io/3.1.1/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/3.1.1/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
+The repository contains a demo project using [Micronaut framework](https://micronaut.io/). It exposed a test API
+for `Person` management available via `/persons**`. A list of the complete test API is available
+here: http://localhost:8080/swagger-ui.
 
----
+### How to run
 
-## Feature http-client documentation
+To run the application just run the `ApplicationKt.main` from IDE or run the following command in a terminal window:
 
-- [Micronaut HTTP Client documentation](https://docs.micronaut.io/latest/guide/index.html#httpClient)
+```
+./mvnw mn:run
+```
 
+### Features used
+
+- Basic. Injection
+- HTTP
+- Validation
+- Error handling
+- Logbook
+- Management
+- Micrometer
+- Security
+- Persistence
+- OpenAPI
+- Testing
+
+Changes for related features can be traced step by step through commits.
